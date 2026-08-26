@@ -176,7 +176,6 @@ class ProtobufPlugin implements Plugin<Project> {
     private Configuration createProtobufConfiguration(ProtoSourceSet protoSourceSet) {
       String protobufConfigName = Utils.getConfigName(protoSourceSet.name, 'protobuf')
       return project.configurations.create(protobufConfigName) { Configuration it ->
-        it.visible = false
         it.transitive = true
       }
     }
@@ -197,7 +196,6 @@ class ProtobufPlugin implements Plugin<Project> {
       Configuration implementationConfig =
               project.configurations.getByName(Utils.getConfigName(protoSourceSet.name, 'implementation'))
       return project.configurations.create(compileProtoConfigName) { Configuration it ->
-          it.visible = false
           it.transitive = true
           it.extendsFrom = [compileConfig, implementationConfig]
           it.canBeConsumed = false
