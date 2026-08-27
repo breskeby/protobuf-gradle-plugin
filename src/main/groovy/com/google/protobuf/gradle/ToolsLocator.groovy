@@ -33,6 +33,7 @@ import groovy.transform.CompileStatic
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
+import org.gradle.util.GradleVersion
 
 /**
  * Holds locations of all external executables, i.e., protoc and plugins.
@@ -93,6 +94,11 @@ class ToolsLocator {
   private void resolveLocator(Project project, ExecutableLocator locator) {
     // create a project configuration dependency for the artifact
     Configuration config = project.configurations.create("protobufToolsLocator_${locator.name}") { Configuration conf ->
+      // `Configuration.setVisible(boolean)` is deprecated as of Gradle 9.8 (and inert since),
+      // so only call it on older Gradle versions to stay warning-clean on 9.8+.
+      if (GradleVersion.current() < GradleVersion.version('9.8')) {
+        conf.visible = false
+      }
       conf.transitive = false
     }
     String groupId, artifact, version, classifier, extension

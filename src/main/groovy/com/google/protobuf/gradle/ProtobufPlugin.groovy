@@ -176,6 +176,11 @@ class ProtobufPlugin implements Plugin<Project> {
     private Configuration createProtobufConfiguration(ProtoSourceSet protoSourceSet) {
       String protobufConfigName = Utils.getConfigName(protoSourceSet.name, 'protobuf')
       return project.configurations.create(protobufConfigName) { Configuration it ->
+        // `Configuration.setVisible(boolean)` is deprecated as of Gradle 9.8 (and inert since),
+        // so only call it on older Gradle versions to stay warning-clean on 9.8+.
+        if (GradleVersion.current() < GradleVersion.version('9.8')) {
+          it.visible = false
+        }
         it.transitive = true
       }
     }
@@ -196,6 +201,11 @@ class ProtobufPlugin implements Plugin<Project> {
       Configuration implementationConfig =
               project.configurations.getByName(Utils.getConfigName(protoSourceSet.name, 'implementation'))
       return project.configurations.create(compileProtoConfigName) { Configuration it ->
+          // `Configuration.setVisible(boolean)` is deprecated as of Gradle 9.8 (and inert since),
+          // so only call it on older Gradle versions to stay warning-clean on 9.8+.
+          if (GradleVersion.current() < GradleVersion.version('9.8')) {
+            it.visible = false
+          }
           it.transitive = true
           it.extendsFrom = [compileConfig, implementationConfig]
           it.canBeConsumed = false
